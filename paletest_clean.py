@@ -6,12 +6,11 @@ from moviepy.video.tools.cuts import *
 
 from operator import itemgetter, attrgetter
 
-try:
-    import cPickle as pickle
-except ModuleNotFoundError:
-    import pickle
+import pickle
 
-# blablablalba
+from statistics import mean
+
+# blablablalbajjj
 
 # variables fichiers/chemins
 vid_path = "input/"
@@ -36,6 +35,11 @@ scene_nb = 0
 scene_start = 0
 
 scenes = []
+hue_average_list = []
+hue_average_average = 0
+
+hue_deviation_list=[]
+hue_deviation_average = 0
 
 # on parcourt les images et on analyse
 for x in np.linspace(0, clip.duration, clip.duration * processing_fps):
@@ -59,11 +63,24 @@ for x in np.linspace(0, clip.duration, clip.duration * processing_fps):
     # changement de scène?
     if abs(prev_hue_avg - hue_avg) > hue_threshold and prev_hue_avg != -1:
         print("Scene",scene_nb)
-        print("Average hue",prev_hue_avg)
-        print("Hue derivation", hue_deviation)
-        scenes.append([(scene_start, prev_time), prev_hue_avg, hue_deviation])
+        print("hue_average_average",prev_hue_avg)
+        print("hue_deviation_average", hue_deviation)
+        scenes.append([(scene_start, prev_time), hue_average_average, hue_deviation_average])
         scene_start = x
         scene_nb += 1
+
+        hue_average_list = []
+        hue_deviation_list =[]
+
+    else:# c'est pas une nouvelle scène
+        # on ajoute au tableau
+        # on recalcule la nouvelle moyenne
+        hue_average_list.append(hue_avg)
+        hue_average_average = mean(hue_average_list)
+
+        hue_deviation_list.append(hue_deviation)
+        hue_deviation_average = mean(hue_deviation_list)
+
 
     #dernière scène
     if x == clip.duration:
