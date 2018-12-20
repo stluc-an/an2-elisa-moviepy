@@ -11,6 +11,8 @@ try:
 except ModuleNotFoundError:
     import pickle
 
+# blablablalba
+
 # variables fichiers/chemins
 vid_path = "input/"
 vid_file = "los.mp4"
